@@ -1,45 +1,53 @@
-from book import Book
 from library import Library
+from menu import get_factory_registry, print_menu
+
 
 def main():
-    my_library = Library()
+    lib = Library()
+    registry = get_factory_registry()  
+    print("Welcome to the Library Management System (Factory Pattern)")
 
-    print("Welcome to the Library Management System")
+    while True:
+        print_menu()
+        choice = input("Choose an option: ").strip()
 
-    # Adding books to the library
-    book1 = Book("The Catcher in the Rye", "C123", "J.D. Salinger", 3)
-    book2 = Book("To Kill a Mockingbird", "M456", "Harper Lee", 5)
+        if choice == "0":
+            print("Goodbye!")
+            break
 
-    for _ in range(3):
-        print("\nAdd a new library item:")
-        my_library.catalogue.add_item()
+        if choice in ("1", "2", "3"):
+            label, factory = registry[choice]
+            print(f"\nAdding a new {label}...")
+            item = factory.create_item()
+            lib.catalogue.add_item(item)
 
-    # Display available books
-    print("\nAvailable item in the library:")
-    my_library.display_available_books()
+        elif choice == "4":
+            q = input("Title contains: ").strip()
+            hits = lib.catalogue.find_by_title(q)
+            for h in hits:
+                print("\n" + str(h))
 
-    # Find books by title
-    search_title = input("\nEnter book title to search: ")
-    found_books = my_library.catalogue.find_books(search_title)
-    if found_books:
-        print("\nItems found:")
-        for item in found_books:
-            print(item)
+        elif choice == "5":
+            lib.display_available()
 
-    # Check out a book
-    call_number = input("\nEnter call number of the book to check out: ")   
-    my_library.check_out(call_number)
-    my_library.display_available_books()
+        elif choice == "6":
+            cn = input("Call Number to check out: ").strip()
+            lib.check_out(cn)
 
-    # Return a book
-    call_number = input("\nEnter call number of the book to return: ")
-    my_library.return_item(call_number)
-    my_library.display_available_books()
+        elif choice == "7":
+            cn = input("Call Number to return: ").strip()
+            lib.return_item(cn)
 
-    # Remove a book
-    call_number = input("\nEnter call number of the book to remove: ")
-    my_library.remove_item(call_number)
-    my_library.display_available_books()
+        elif choice == "8":
+            cn = input("Call Number to remove: ").strip()
+            lib.catalogue.remove_item(cn)
+
+        elif choice == "9":
+            lib.catalogue.display_all()
+
+        else:
+            print("Invalid choice. Try again.")
+
 
 if __name__ == "__main__":
     main()
