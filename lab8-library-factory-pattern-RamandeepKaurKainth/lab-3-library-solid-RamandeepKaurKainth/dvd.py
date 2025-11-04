@@ -1,14 +1,17 @@
 from library_item import LibraryItem
 
 class DVD(LibraryItem):
-    def __init__(self, title, call_number, release_date, region_code, num_of_copies):
-        super().__init__(title, call_number)
+    def __init__(self, title: str, call_number: str, release_date: str, region_code: str, num_of_copies: int = 1, **kwargs):
+        super().__init__(title=title, call_number=call_number, num_of_copies=num_of_copies, **kwargs)
         self.release_date = release_date
         self.region_code = region_code
-        self.num_of_copies = num_of_copies
 
-    def check_availability(self):
-        return self.num_of_copies > 0
-
-    def __str__(self):
-        return f"Title: {self.title}\nCall Number: {self.call_number}\nRelease Date: {self.release_date}\nRegion Code: {self.region_code}\nAvailable Copies: {self.num_of_copies}"
+    def __str__(self) -> str:
+        return (
+            f"[DVD]\n"
+            f"Title: {self.title}\n"
+            f"Call Number: {self.call_number}\n"
+            f"Release Date: {self.release_date}\n"
+            f"Region Code: {self.region_code}\n"
+            f"Available Copies: {self.num_of_copies}"
+        )
