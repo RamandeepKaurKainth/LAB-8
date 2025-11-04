@@ -1,0 +1,21 @@
+Inheritance (Generalization):
+
+Book, Journal, and DVD → inherit from → LibraryItem
+
+Association:
+
+Library → has a → Catalogue (composition/aggregation)
+
+Arrow: Solid line, possibly with a diamond - composition.
+
+Dependency:
+
+Catalogue → uses → LibraryItemGenerator to create new items.
+
+Multiplicity:
+
+Catalogue → contains many → LibraryItems
+
+hollow diamond 
+
+Notation near LibraryItem: 0..* (zero or many).
