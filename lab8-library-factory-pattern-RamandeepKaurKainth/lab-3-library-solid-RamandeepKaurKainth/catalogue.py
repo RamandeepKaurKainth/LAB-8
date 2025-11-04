@@ -1,48 +1,42 @@
 import difflib
-from book import Book
-from dvd import DVD
-from journal import Journal
+from typing import List, Iterable
 from library_item import LibraryItem
-from library_item_generator import LibraryItemGenerator
 
 class Catalogue:
     def __init__(self):
-        self.books: list[LibraryItem] = []
+        self.items: List[LibraryItem] = []
 
-    def find_books(self, string):
-        found_books = []
-        for book in self.books:
-            if string.lower() in book.title.lower():
-                found_books.append(book)
-        if not found_books:
-            similar_titles = difflib.get_close_matches(string, [book.title for book in self.books])
-            if similar_titles:
-                print(f"Book not found. Did you mean one of these titles? {', '.join(similar_titles)}")
-            else:
-                print("Book not found.")
-        return found_books
+    def add_item(self, item: LibraryItem):
+        if any(existing.call_number == item.call_number for existing in self.items):
+            print(f"Item with call number {item.call_number} already exists.")
+            return
+        self.items.append(item)
+        print(f"Added: {item.title} (Call# {item.call_number})")
 
-    def add_book(self, book: LibraryItem):
-        if book not in self.books:
-            self.books.append(book)
-            print(f"Added: {book.title} (Call# {book.call_number})")
+    def remove_item(self, call_number: str):
+        before = len(self.items)
+        self.items = [i for i in self.items if i.call_number != call_number]
+        if len(self.items) < before:
+            print(f"Item with call number {call_number} removed.")
         else:
-            print(f"Book with call number {book.call_number} already exists.")
+            print(f"Item with call number {call_number} not found.")
 
-    def remove_book(self, call_number):
-        for book in self.books:
-            if book.call_number == call_number:
-                self.books.remove(book)
-                print(f"Book with call number {call_number} removed.")
-                return
-        print(f"Book with call number {call_number} not found.")
+    def find_by_title(self, query: str) -> Iterable[LibraryItem]:
+        hits = [i for i in self.items if query.lower() in i.title.lower()]
+        if hits:
+            return hits
 
-    def add_item(self):
-        item = LibraryItemGenerator.create_item()
-        if item:
-            if item not in self.books:
-                self.books.append(item)
-                print(f"Added: {item.title} (Call# {item.call_number})")
-            else:
-                
-                print(f"Item with call number {item.call_number} already exists.")
+        titles = [i.title for i in self.items]
+        suggestions = difflib.get_close_matches(query, titles)
+        if suggestions:
+            print(f"Not found. Did you mean: {', '.join(suggestions)}?")
+        else:
+            print("No matches.")
+        return []
+
+    def display_all(self):
+        if not self.items:
+            print("No items in catalogue.")
+            return
+        for item in self.items:
+            print("\n" + str(item))
